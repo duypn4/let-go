@@ -7,10 +7,21 @@ import (
 	"strings"
 
 	"duypn4.dev/note/note"
+	"duypn4.dev/note/todo"
 )
+
+type saver interface {
+	Save() error
+}
+
+type outputable interface {
+	saver
+	Display()
+}
 
 func main() {
 	title, content := getUserData()
+	text := getUserInput("Todo text: ")
 
 	note, err := note.New(title, content)
 	if err != nil {
@@ -18,13 +29,18 @@ func main() {
 		return
 	}
 
-	note.Display()
-
-	err = note.Save()
+	todo, err := todo.New(text)
 	if err != nil {
-		fmt.Println("failed to save file")
+		fmt.Println(err)
+		return
 	}
-	fmt.Println("saved file")
+
+	err = outputData(note)
+	if err != nil {
+		return
+	}
+
+	outputData(todo)
 }
 
 func getUserData() (string, string) {
@@ -49,4 +65,20 @@ func getUserInput(promt string) string {
 	text = strings.TrimSuffix(text, "\r")
 
 	return text
+}
+
+func outputData(data outputable) error {
+	data.Display()
+	return saveData(data)
+}
+
+func saveData(data saver) error {
+	err := data.Save()
+	if err != nil {
+		fmt.Println("failed to save file")
+		return err
+	}
+
+	fmt.Println("saved file")
+	return nil
 }
