@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"eventsapi/db"
 	"eventsapi/utils"
 )
@@ -34,4 +35,22 @@ func (user *User) Save() error {
 
 	user.ID, err = result.LastInsertId()
 	return err
+}
+
+func (user User) ValidateCredentials() error {
+	query := "SELECT password FROM users WHERE email = ?"
+	row := db.DB.QueryRow(query, user.Email)
+
+	var retriedPassword string
+	err := row.Scan(&retriedPassword)
+	if err != nil {
+		return errors.New("could not authenticate")
+	}
+
+	passwordIsValid := utils.CheckPasswordHash(user.Password, retriedPassword)
+	if !passwordIsValid {
+		return errors.New("could not authenticate")
+	}
+
+	return nil
 }
