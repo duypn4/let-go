@@ -3,6 +3,7 @@ package routes
 import (
 	"eventsapi/models"
 	"eventsapi/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ func signup(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "user has been saved"})
+	context.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("user %d has been saved", user.ID)})
 }
 
 func login(context *gin.Context) {
