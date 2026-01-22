@@ -1,0 +1,15 @@
+meta {
+  name: delete-event
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{endpoint}}/events/1
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: {{token}}
+}

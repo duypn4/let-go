@@ -1,0 +1,27 @@
+meta {
+  name: login
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{endpoint}}/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+      "email": "test1@gmail.com",
+      "password": "test"
+  }
+}
+
+script:post-response {
+  let data = res.body;
+  bru.setEnvVar("token", data.token);
+}

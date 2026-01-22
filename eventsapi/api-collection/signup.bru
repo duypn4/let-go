@@ -1,0 +1,22 @@
+meta {
+  name: signup
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{endpoint}}/signup
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+      "email": "test1@gmail.com",
+      "password": "test"
+  }
+}
