@@ -1,0 +1,20 @@
+meta {
+  name: register-event
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{endpoint}}/events/2/register
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: {{token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -2,6 +2,7 @@ package models
 
 import (
 	"eventsapi/db"
+	"fmt"
 	"time"
 )
 
@@ -71,6 +72,8 @@ func GetEventById(eventId int64) (*Event, error) {
 		return nil, err
 	}
 
+	fmt.Println(event)
+
 	return &event, nil
 }
 
@@ -102,5 +105,37 @@ func (event *Event) Delete() error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(event.ID)
+	return err
+}
+
+func (event *Event) Register() error {
+	query := `INSERT INTO registrations(eventId, userId)
+	VALUES(?, ?)
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID, event.UserID)
+
+	return err
+}
+
+func (event *Event) Cancel(userId int64) error {
+	query := `
+	DELETE FROM registrations WHERE eventId = ? AND userId = ?
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(event.ID, userId)
+
 	return err
 }
